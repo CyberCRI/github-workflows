@@ -5,10 +5,6 @@ on:
         type: string
         required: true
         description: 'The name of the registry to push to'
-      registry-username:
-        type: string
-        required: true
-        description: 'The username on the registry'
       image-name:
         type: string
         required: true
@@ -18,6 +14,9 @@ on:
         required: true
         description: 'The tag of the image to push'
     secrets:
+      registry-username:
+        required: true
+        description: 'The username on the registry'
       registry-password:
         required: true
         description: 'The password on the registry'
