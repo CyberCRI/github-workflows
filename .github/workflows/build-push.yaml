@@ -27,7 +27,7 @@ on:
 
 jobs:
   build-push:
-    runs-on: self-hosted
+    runs-on: [self-hosted, default-runner]
     steps:
       - uses: actions/checkout@v3
       - name: Set up Docker Buildx
