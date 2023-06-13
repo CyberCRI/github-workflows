@@ -1,0 +1,32 @@
+on:
+  workflow_call:
+jobs:
+  delete-tag:
+    runs-on: [self-hosted, default-runner]
+    steps:
+      - name: Delete ref
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const ref = "tags/${{ github.event.ref }}_deploy";
+            try {
+              console.log(`Getting ref ${ref}`);
+              github.git.getRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: ref
+              });
+            } catch (error) {
+              if (error.status === 404) {
+                console.log(`No tag ${refValue}_deploy found, skipping`);
+                return;
+              }
+              throw error;
+            }
+            console.log("Found ref, deleting it...");
+            github.git.deleteRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: ref
+            });
+            console.log("Done !");
