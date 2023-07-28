@@ -22,6 +22,10 @@ on:
         required: false
         description: 'The path to the dockerfile'
         default: "."
+      file:
+        type: string
+        required: false
+        description: 'The name of the dockerfile'
     secrets:
       registry-username:
         required: true
@@ -52,3 +56,4 @@ jobs:
           tags: ${{ inputs.registry-name }}/${{inputs.image-name}}:${{inputs.image-tag}}
           context: ${{ inputs.context }} # https://github.com/docker/build-push-action/issues/638 / https://github.com/docker/build-push-action/issues/300#issuecomment-1268406727
           build-args: ${{ inputs.build-args }}
+          file: ${{ inputs.file }}
