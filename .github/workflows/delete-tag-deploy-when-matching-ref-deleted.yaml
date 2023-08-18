@@ -4,7 +4,7 @@ jobs:
   delete-tag:
     runs-on: [self-hosted, default-runner]
     steps:
-      - name: Delete ref
+      - name: Delete ref deploy
         uses: actions/github-script@v4
         with:
           script: |
@@ -19,6 +19,32 @@ jobs:
             } catch (error) {
               if (error.status === 404) {
                 console.log(`No tag ${refValue}_deploy found, skipping`);
+                return;
+              }
+              throw error;
+            }
+            console.log("Found ref, deleting it...");
+            github.git.deleteRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: ref
+            });
+            console.log("Done !");
+      - name: Delete ref deploy fast
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const ref = "tags/${{ github.event.ref }}_deploy-fast";
+            try {
+              console.log(`Getting ref ${ref}`);
+              github.git.getRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: ref
+              });
+            } catch (error) {
+              if (error.status === 404) {
+                console.log(`No tag ${refValue}_deploy-fast found, skipping`);
                 return;
               }
               throw error;

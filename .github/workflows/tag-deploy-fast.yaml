@@ -1,0 +1,11 @@
+on:
+  workflow_call:
+jobs:
+  build-push:
+    runs-on: [self-hosted, default-runner]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Tag deploy fast
+        run: |
+          git tag -f "${{ github.ref_name }}_deploy-fast" HEAD
+          git push -f origin "${{ github.ref_name }}_deploy-fast"
