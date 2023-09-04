@@ -32,11 +32,11 @@ jobs:
                 });
                 console.log("Done !");
               } catch (error) {
+                console.log(error);
                 if (error.status === 404) {
                   console.log(`No tag ${ref} found, skipping`);
+                  continue;
                 }
-                else {
-                  throw error;
-                }
+                throw error;
               }
             }
