@@ -17,6 +17,7 @@ jobs:
           script: |
             const refsToDelete = "${{ inputs.refs-suffixes }}".split(",").map(ref => `refs/tags/${{ github.event.ref }}${ref.trim()}`);
             for (const ref of refsToDelete) {
+              console.log(`Getting ref ${ref}`);
               try {
                 console.log(`Getting ref ${ref}`);
                 await github.git.getRef({
