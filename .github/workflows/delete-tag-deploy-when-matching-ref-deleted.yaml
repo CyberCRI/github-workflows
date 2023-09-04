@@ -12,12 +12,11 @@ jobs:
     runs-on: [self-hosted, default-runner]
     steps:
       - name: Delete ref deploy
-        uses: actions/github-script@v4
+        uses: actions/github-script@v5
         with:
           script: |
             const refsToDelete = "${{ inputs.refs-suffixes }}".split(",").map(ref => `tags/${{ github.event.ref }}${ref.trim()}`);
             for (const ref of refsToDelete) {
-              console.log(`Getting ref ${ref}`);
               try {
                 console.log(`Getting ref ${ref}`);
                 await github.git.getRef({
