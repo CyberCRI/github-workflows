@@ -19,13 +19,13 @@ jobs:
             for (const ref of refsToDelete) {
               try {
                 console.log(`Getting ref ${ref}`);
-                await github.git.getRef({
+                await github.rest.git.getRef({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   ref: ref
                 });
                 console.log("Found ref, deleting it...");
-                await github.git.deleteRef({
+                await github.rest.git.deleteRef({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   ref: ref
