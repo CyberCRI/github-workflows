@@ -4,8 +4,9 @@ on:
       refs-suffixes:
         description: 'Comma-separated list of refs suffixes to delete'
         type: string
-        required: true
+        required: false
         default: "_deploy,_deploy-fast"
+
 jobs:
   delete-tag:
     runs-on: [self-hosted, default-runner]
