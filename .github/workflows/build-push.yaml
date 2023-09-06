@@ -61,11 +61,12 @@ jobs:
         uses: actions/checkout@v3
       # https://dev.to/dtinth/authenticating-as-a-github-app-in-a-github-actions-workflow-27co
       # The following steps are only needed for recursive submodules checkout
-      - uses: actions/setup-node@v3
+      - name: "[SUBMODULES] Setup Node.js for npx"
+        uses: actions/setup-node@v3
+        if: ${{ inputs.recursive-submodule-checkout }}
         with:
           node-version: '20'
-        if: ${{ inputs.recursive-submodule-checkout }}
-      - name: Obtain GitHub App Installation Access Token
+      - name: "[SUBMODULES] Obtain GitHub App Installation Access Token"
         if: ${{ inputs.recursive-submodule-checkout }}
         id: githubAppAuth
         run: |
@@ -77,7 +78,7 @@ jobs:
           echo "::add-mask::$TOKEN"
           echo "::set-output name=token::$TOKEN"
       - if: ${{ inputs.recursive-submodule-checkout }}
-        name: Checkout with submodules
+        name: "[SUBMODULES] Checkout with submodules"
         uses: actions/checkout@v3
         with:
           submodules: 'recursive'
