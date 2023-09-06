@@ -48,7 +48,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          submodules: ${{ inputs.recursive-submodule-checkout && 'recursive' || false }}
+          submodules: ${{ inputs.recursive-submodule-checkout == true && 'recursive' || false }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
         with:
