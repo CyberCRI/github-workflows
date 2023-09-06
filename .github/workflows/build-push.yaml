@@ -54,8 +54,6 @@ jobs:
         with:
           node-version: '20'
         if: ${{ inputs.recursive-submodule-checkout }}
-      - run: npm install -g npx
-        if: ${{ inputs.recursive-submodule-checkout }}
       - name: Obtain GitHub App Installation Access Token
         if: ${{ inputs.recursive-submodule-checkout }}
         id: githubAppAuth
