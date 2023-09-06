@@ -31,8 +31,16 @@ on:
         required: false
         description: 'Whether to pass the `submodules: recursive` option and PAT to the checkout step'
         default: false
-      # submodules-app-id
-      # submodules-app-installation-id
+      submodules-app-id:
+        type: string
+        required: false
+        description: 'The id of the app used for authentication. Only needed if `recursive-submodule-checkout` is true.'
+        default: "213843"
+      submodules-app-installation-id:
+        type: string
+        required: false
+        description: 'The installation id of the app used for authentication. Only needed if `recursive-submodule-checkout` is true.'
+        default: "26790862"
     secrets:
       registry-username:
         required: true
@@ -40,9 +48,9 @@ on:
       registry-password:
         required: true
         description: 'The password on the registry'
-      submodules-app-credentials-token:
+      submodules-app-private-key:
         required: false
-        description: 'The app-credentials-token. Only needed if `recursive-submodule-checkout` is true. To generate one, see https://dev.to/dtinth/authenticating-as-a-github-app-in-a-github-actions-workflow-27co'
+        description: 'The private-key of the app used for authentication. Only needed if `recursive-submodule-checkout` is true'
 
 jobs:
   build-push:
@@ -56,20 +64,23 @@ jobs:
         with:
           node-version: '20'
         if: ${{ inputs.recursive-submodule-checkout }}
-      # - name: Obtain GitHub App Installation Access Token
-      #   if: ${{ inputs.recursive-submodule-checkout }}
-      #   id: githubAppAuth
-      #   run: |
-      #     TOKEN="$(npx obtain-github-app-installation-access-token ci ${{ secrets.submodules-app-credentials-token }})"
-      #     echo "::add-mask::$TOKEN"
-      #     echo "::set-output name=token::$TOKEN"
+      - name: Obtain GitHub App Installation Access Token
+        if: ${{ inputs.recursive-submodule-checkout }}
+        id: githubAppAuth
+        run: |
+          echo "${{ secrets.submodules-app-private-key }}" > /tmp/submodules-app-private-key.pem
+          TOKEN="$(npx obtain-github-app-installation-access-token \
+          -a ${{vars.submodules-app-id}} \
+          -i ${{vars.submodules-app-installation-id}} \
+          -k /tmp/submodules-app-private-key.pem)"
+          echo "::add-mask::$TOKEN"
+          echo "::set-output name=token::$TOKEN"
       - if: ${{ inputs.recursive-submodule-checkout }}
         name: Checkout with submodules
         uses: actions/checkout@v3
         with:
           submodules: 'recursive'
-          # token: ${{ steps.githubAppAuth.outputs.token }}
-          token: ${{ secrets.submodules-app-credentials-token }}
+          token: ${{ steps.githubAppAuth.outputs.token }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
         with:
