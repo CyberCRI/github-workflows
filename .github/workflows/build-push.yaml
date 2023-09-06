@@ -31,6 +31,8 @@ on:
         required: false
         description: 'Whether to pass the `submodules: recursive` option and PAT to the checkout step'
         default: false
+      # submodules-app-id
+      # submodules-app-installation-id
     secrets:
       registry-username:
         required: true
@@ -54,26 +56,20 @@ jobs:
         with:
           node-version: '20'
         if: ${{ inputs.recursive-submodule-checkout }}
-      - name: Obtain GitHub App Installation Access Token
-        if: ${{ inputs.recursive-submodule-checkout }}
-        id: githubAppAuth
-        run: |
-          TOKEN="$(npx obtain-github-app-installation-access-token ci ${{ secrets.submodules-app-credentials-token }})"
-          echo "::add-mask::$TOKEN"
-          echo "::set-output name=token::$TOKEN"
-      - name: Use the obtained token
-        run: |
-          curl -X POST -H 'Content-Type: application/json' \
-            -d '{"context":"test","state":"success"}' \
-            "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA?access_token=$GITHUB_TOKEN"
-        env:
-          GITHUB_TOKEN: ${{ steps.githubAppAuth.outputs.token }}
+      # - name: Obtain GitHub App Installation Access Token
+      #   if: ${{ inputs.recursive-submodule-checkout }}
+      #   id: githubAppAuth
+      #   run: |
+      #     TOKEN="$(npx obtain-github-app-installation-access-token ci ${{ secrets.submodules-app-credentials-token }})"
+      #     echo "::add-mask::$TOKEN"
+      #     echo "::set-output name=token::$TOKEN"
       - if: ${{ inputs.recursive-submodule-checkout }}
         name: Checkout with submodules
         uses: actions/checkout@v3
         with:
           submodules: 'recursive'
-          token: ${{ steps.githubAppAuth.outputs.token }}
+          # token: ${{ steps.githubAppAuth.outputs.token }}
+          token: ${{ secrets.submodules-app-credentials-token }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
         with:
