@@ -38,9 +38,9 @@ on:
       registry-password:
         required: true
         description: 'The password on the registry'
-      submodules-pat:
+      submodules-app-credentials-token:
         required: false
-        description: 'The PAT to use for the recursive submodule checkout. Only needed if `recursive-submodule-checkout` is true'
+        description: 'The app-credentials-token. Only needed if `recursive-submodule-checkout` is true. To generate one, see https://dev.to/dtinth/authenticating-as-a-github-app-in-a-github-actions-workflow-27co'
 
 jobs:
   build-push:
@@ -49,12 +49,27 @@ jobs:
       - if: ${{ !inputs.recursive-submodule-checkout }}
         name: Checkout without submodules
         uses: actions/checkout@v3
+      # https://dev.to/dtinth/authenticating-as-a-github-app-in-a-github-actions-workflow-27co
+      - name: Obtain GitHub App Installation Access Token
+        if: ${{ inputs.recursive-submodule-checkout }}
+        id: githubAppAuth
+        run: |
+          TOKEN="$(npx obtain-github-app-installation-access-token ci ${{ secrets.submodules-app-credentials-token }})"
+          echo "::add-mask::$TOKEN"
+          echo "::set-output name=token::$TOKEN"
+      - name: Use the obtained token
+        run: |
+          curl -X POST -H 'Content-Type: application/json' \
+            -d '{"context":"test","state":"success"}' \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA?access_token=$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ steps.githubAppAuth.outputs.token }}
       - if: ${{ inputs.recursive-submodule-checkout }}
         name: Checkout with submodules
         uses: actions/checkout@v3
         with:
           submodules: 'recursive'
-          token: ${{ secrets.submodules-pat }}
+          token: ${{ steps.githubAppAuth.outputs.token }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
         with:
