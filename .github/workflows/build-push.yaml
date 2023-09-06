@@ -68,10 +68,11 @@ jobs:
         if: ${{ inputs.recursive-submodule-checkout }}
         id: githubAppAuth
         run: |
+          echo "${{ inputs.submodules-app-id }}"
           echo "${{ secrets.submodules-app-private-key }}" > /tmp/submodules-app-private-key.pem
           TOKEN="$(npx obtain-github-app-installation-access-token \
-          -a ${{vars.submodules-app-id}} \
-          -i ${{vars.submodules-app-installation-id}} \
+          -a ${{ inputs.submodules-app-id }} \
+          -i ${{ inputs.submodules-app-installation-id }} \
           -k /tmp/submodules-app-private-key.pem)"
           echo "::add-mask::$TOKEN"
           echo "::set-output name=token::$TOKEN"
