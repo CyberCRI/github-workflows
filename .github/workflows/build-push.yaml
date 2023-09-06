@@ -50,6 +50,8 @@ jobs:
         name: Checkout without submodules
         uses: actions/checkout@v3
       # https://dev.to/dtinth/authenticating-as-a-github-app-in-a-github-actions-workflow-27co
+      - uses: actions/setup-node@v3
+        if: ${{ inputs.recursive-submodule-checkout }}
       - name: Obtain GitHub App Installation Access Token
         if: ${{ inputs.recursive-submodule-checkout }}
         id: githubAppAuth
