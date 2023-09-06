@@ -47,10 +47,10 @@ jobs:
     runs-on: [self-hosted, default-runner]
     steps:
       - if: ${{ !inputs.recursive-submodule-checkout }}
-        name: Checkout with submodules
+        name: Checkout without submodules
         uses: actions/checkout@v3
       - if: ${{ inputs.recursive-submodule-checkout }}
-        name: Checkout without submodules
+        name: Checkout with submodules
         uses: actions/checkout@v3
         with:
           submodules: 'recursive'
