@@ -59,22 +59,18 @@ jobs:
       - if: ${{ !inputs.recursive-submodule-checkout }}
         name: Checkout without submodules
         uses: actions/checkout@v3
-      # https://dev.to/dtinth/authenticating-as-a-github-app-in-a-github-actions-workflow-27co
       # The following steps are only needed for recursive submodules checkout
-      - name: "[SUBMODULES] Setup Node.js for npx"
-        uses: actions/setup-node@v3
-        if: ${{ inputs.recursive-submodule-checkout }}
-        with:
-          node-version: '20'
       - name: "[SUBMODULES] Obtain GitHub App Installation Access Token"
         if: ${{ inputs.recursive-submodule-checkout }}
         id: githubAppAuth
         run: |
+          curl -O https://gist.githubusercontent.com/Nastaliss/7f8466f59072d744540190721a63672d/raw/945f8b28473f0d8cd3f2442dfa08481ff370c62a/generate_github_access_token.sh
+          chmod +x generate_github_access_token.sh
           echo "${{ secrets.submodules-app-private-key }}" > /tmp/submodules-app-private-key.pem
-          TOKEN="$(npx obtain-github-app-installation-access-token \
-          -a ${{ inputs.submodules-app-id }} \
-          -i ${{ inputs.submodules-app-installation-id }} \
-          -k /tmp/submodules-app-private-key.pem)"
+          TOKEN="$(APP_INSTALLATION_ID=${{ inputs.submodules-app-installation-id }} \
+            APP_ID=${{ inputs.submodules-app-id }} \
+            SIGNING_KEY_PATH="/tmp/submodules-app-private-key.pem" \
+            ./generate_github_access_token.sh)"
           echo "::add-mask::$TOKEN"
           echo "::set-output name=token::$TOKEN"
       - if: ${{ inputs.recursive-submodule-checkout }}
