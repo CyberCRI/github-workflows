@@ -67,8 +67,8 @@ jobs:
           curl -O https://gist.githubusercontent.com/Nastaliss/7f8466f59072d744540190721a63672d/raw/945f8b28473f0d8cd3f2442dfa08481ff370c62a/generate_github_access_token.sh
           chmod +x generate_github_access_token.sh
           echo "${{ secrets.submodules-app-private-key }}" > /tmp/submodules-app-private-key.pem
-          TOKEN="$(APP_INSTALLATION_ID=26790862 \
-            APP_ID=213843 \
+          TOKEN="$(APP_INSTALLATION_ID=${{ inputs.submodules-app-installation-id }} \
+            APP_ID=${{ inputs.submodules-app-id }} \
             SIGNING_KEY_PATH="/tmp/submodules-app-private-key.pem" \
             ./generate_github_access_token.sh)"
           echo "::add-mask::$TOKEN"
