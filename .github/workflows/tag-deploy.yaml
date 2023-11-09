@@ -2,7 +2,7 @@ on:
   workflow_call:
 jobs:
   build-push:
-    runs-on: [self-hosted, default-runner]
+    runs-on: [self-hosted, tiny-runner]
     steps:
       - uses: actions/checkout@v2
       - name: Tag deploy
