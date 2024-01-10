@@ -4,7 +4,7 @@ jobs:
   build-push:
     runs-on: [self-hosted, tiny-runner]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Tag deploy fast
         run: |
           git tag -f "${{ github.ref_name }}_deploy-fast" HEAD

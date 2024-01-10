@@ -58,7 +58,7 @@ jobs:
     steps:
       - if: ${{ !inputs.recursive-submodule-checkout }}
         name: Checkout without submodules
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       # The following steps are only needed for recursive submodules checkout
       - name: "[SUBMODULES] Obtain GitHub App Installation Access Token"
         if: ${{ inputs.recursive-submodule-checkout }}
@@ -72,10 +72,10 @@ jobs:
             SIGNING_KEY_PATH="/tmp/submodules-app-private-key.pem" \
             ./generate_github_access_token.sh)"
           echo "::add-mask::$TOKEN"
-          echo "::set-output name=token::$TOKEN"
+          echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
       - if: ${{ inputs.recursive-submodule-checkout }}
         name: "[SUBMODULES] Checkout with submodules"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: 'recursive'
           token: ${{ steps.githubAppAuth.outputs.token }}
