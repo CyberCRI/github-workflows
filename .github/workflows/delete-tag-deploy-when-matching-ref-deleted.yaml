@@ -9,7 +9,7 @@ on:
 
 jobs:
   delete-tag:
-    runs-on: [self-hosted, default-runner]
+    runs-on: [self-hosted, m1c1-runner]
     steps:
       - name: Delete ref deploy
         uses: actions/github-script@v6
