@@ -2,7 +2,7 @@ on:
   workflow_call:
 jobs:
   build-push:
-    runs-on: [self-hosted, m1c1-runner]
+    runs-on: global-create-tag-runner
     steps:
       - uses: actions/checkout@v4
       - name: Tag deploy
