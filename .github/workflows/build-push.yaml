@@ -31,16 +31,6 @@ on:
         required: false
         description: 'Whether to pass the `submodules: recursive` option and PAT to the checkout step'
         default: false
-      submodules-app-id:
-        type: string
-        required: false
-        description: 'The id of the app used for authentication. Only needed if `recursive-submodule-checkout` is true.'
-        default: '213843'
-      submodules-app-installation-id:
-        type: string
-        required: false
-        description: 'The installation id of the app used for authentication. Only needed if `recursive-submodule-checkout` is true.'
-        default: '26790862'
     secrets:
       registry-username:
         required: true
@@ -51,7 +41,12 @@ on:
       submodules-app-private-key:
         required: false
         description: 'The private-key of the app used for authentication. Only needed if `recursive-submodule-checkout` is true'
-
+      submodules-app-id:
+        required: false
+        description: 'The id of the app used for authentication. Only needed if `recursive-submodule-checkout` is true.'
+      submodules-app-installation-id:
+        required: false
+        description: 'The installation id of the app used for authentication. Only needed if `recursive-submodule-checkout` is true.'
 jobs:
   build-push:
     runs-on: global-build-docker-runner
@@ -64,8 +59,8 @@ jobs:
         uses: Nastaliss/get-github-app-pat@v1
         id: githubAppAuth
         with:
-          app-id: ${{ inputs.submodules-app-id }}
-          app-installation-id: ${{ inputs.submodules-app-installation-id }}
+          app-id: ${{ secrets.submodules-app-id }}
+          app-installation-id: ${{ secrets.submodules-app-installation-id }}
           app-private-key: ${{ secrets.submodules-app-private-key }}
       - if: ${{ inputs.recursive-submodule-checkout }}
         name: '[SUBMODULES] Checkout with submodules'
