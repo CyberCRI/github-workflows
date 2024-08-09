@@ -59,9 +59,9 @@ jobs:
         uses: Nastaliss/get-github-app-pat@v1
         id: githubAppAuth
         with:
-          app-id: ${{ secrets.submodules-app-id }}
-          app-installation-id: ${{ secrets.submodules-app-installation-id }}
-          app-private-key: ${{ secrets.submodules-app-private-key }}
+          app-id: ${{ secrets.INFRA_BOT_APP_ID }}
+          app-installation-id: ${{ secrets.INFRA_BOT_APP_INSTALLATION_ID }}
+          app-private-key: ${{ secrets.INFRA_BOT_APP_PRIVATE_KEY }}
       - if: ${{ inputs.recursive-submodule-checkout }}
         name: '[SUBMODULES] Checkout with submodules'
         uses: actions/checkout@v4
