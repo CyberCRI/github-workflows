@@ -13,6 +13,11 @@ on:
         type: string
         required: true
         description: 'The tag of the image to push'
+      extra-tags:
+        type: string
+        required: false
+        description: 'Additional full tags (registry/image:tag), one per line, to push along with the main one'
+        default: ''
       build-args:
         type: string
         required: false
@@ -88,7 +93,9 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: ${{ inputs.push }}
-          tags: ${{ inputs.registry-name }}/${{inputs.image-name}}:${{inputs.image-tag}}
+          tags: |
+            ${{ inputs.registry-name }}/${{inputs.image-name}}:${{inputs.image-tag}}
+            ${{ inputs.extra-tags }}
           cache-from: type=registry,ref=${{ inputs.registry-name }}/${{inputs.image-name}}:buildcache
           # a build that is not pushed only reads the cache, so it can't overwrite the one of main
           cache-to: ${{ inputs.push && format('type=registry,mode=max,ref={0}/{1}:buildcache', inputs.registry-name, inputs.image-name) || '' }}
